@@ -3,8 +3,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const path = require('path');
-const fs = require('fs');
+const mongoose = require('mongoose');
 
 const app = express();
 const server = http.createServer(app);
@@ -13,80 +12,76 @@ const io = socketIo(server);
 app.use(express.json());
 app.use(express.static('public'));
 
-// File-based storage
-const USERS_FILE = 'users.json';
-const users = new Map();
+// MongoDB connection
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/tictactoe');
+
+// User schema
+const userSchema = new mongoose.Schema({
+  username: { type: String, unique: true, required: true },
+  password: { type: String, required: true },
+  wins: { type: Number, default: 0 },
+  losses: { type: Number, default: 0 },
+  draws: { type: Number, default: 0 },
+  avatar: String
+});
+
+const User = mongoose.model('User', userSchema);
+
 const onlineUsers = new Map();
 const gameRooms = new Map();
 const challenges = new Map();
 const matchmakingQueue = new Set();
 const pendingMatches = new Map();
 
-// Load users from file
-function loadUsers() {
-  try {
-    if (fs.existsSync(USERS_FILE)) {
-      const data = fs.readFileSync(USERS_FILE, 'utf8');
-      const usersArray = JSON.parse(data);
-      usersArray.forEach(user => users.set(user.username, user));
-    }
-  } catch (error) {
-    console.log('No existing users file found, starting fresh');
-  }
-}
-
-// Save users to file
-function saveUsers() {
-  const usersArray = Array.from(users.values());
-  fs.writeFileSync(USERS_FILE, JSON.stringify(usersArray, null, 2));
-}
-
-loadUsers();
-
 const JWT_SECRET = 'your-secret-key';
 
 // Auth routes
 app.post('/api/register', async (req, res) => {
-  const { username, password } = req.body;
-  if (users.has(username)) {
-    return res.status(400).json({ error: 'Username already exists' });
+  try {
+    const { username, password } = req.body;
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(400).json({ error: 'Username already exists' });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await User.create({ username, password: hashedPassword });
+    res.json({ message: 'User registered successfully' });
+  } catch (error) {
+    res.status(500).json({ error: 'Registration failed' });
   }
-  const hashedPassword = await bcrypt.hash(password, 10);
-  users.set(username, { 
-    username, 
-    password: hashedPassword, 
-    wins: 0, 
-    losses: 0, 
-    draws: 0 
-  });
-  saveUsers();
-  res.json({ message: 'User registered successfully' });
 });
 
 app.post('/api/login', async (req, res) => {
-  const { username, password } = req.body;
-  const user = users.get(username);
-  if (!user || !await bcrypt.compare(password, user.password)) {
-    return res.status(401).json({ error: 'Invalid credentials' });
+  try {
+    const { username, password } = req.body;
+    const user = await User.findOne({ username });
+    if (!user || !await bcrypt.compare(password, user.password)) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    const token = jwt.sign({ username }, JWT_SECRET);
+    res.json({ token, user: { username, wins: user.wins, losses: user.losses, draws: user.draws, avatar: user.avatar } });
+  } catch (error) {
+    res.status(500).json({ error: 'Login failed' });
   }
-  const token = jwt.sign({ username }, JWT_SECRET);
-  res.json({ token, user: { username, wins: user.wins, losses: user.losses, draws: user.draws, avatar: user.avatar } });
 });
 
-app.get('/api/leaderboard', (req, res) => {
-  const leaderboard = Array.from(users.values())
-    .sort((a, b) => b.wins - a.wins)
-    .slice(0, 10)
-    .map(({ username, wins, losses, draws }) => ({ username, wins, losses, draws }));
-  res.json(leaderboard);
+app.get('/api/leaderboard', async (req, res) => {
+  try {
+    const leaderboard = await User.find({}, 'username wins losses draws')
+      .sort({ wins: -1 })
+      .limit(10);
+    res.json(leaderboard);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch leaderboard' });
+  }
 });
 
 // Socket handling
 io.on('connection', (socket) => {
-  socket.on('authenticate', (token) => {
+  socket.on('authenticate', async (token) => {
     try {
       const decoded = jwt.verify(token, JWT_SECRET);
-      const user = users.get(decoded.username);
+      const user = await User.findOne({ username: decoded.username });
       if (user) {
         socket.username = decoded.username;
         onlineUsers.set(socket.id, { username: decoded.username, socketId: socket.id });
@@ -159,17 +154,14 @@ io.on('connection', (socket) => {
       if (winner || isDraw) {
         room.gameState = winner ? 'finished' : 'draw';
         if (winner) {
-          const winnerUser = users.get(winner);
-          const loserUser = users.get(Object.keys(room.players).find(p => p !== winner));
-          winnerUser.wins++;
-          loserUser.losses++;
+          await User.updateOne({ username: winner }, { $inc: { wins: 1 } });
+          const loser = Object.keys(room.players).find(p => p !== winner);
+          await User.updateOne({ username: loser }, { $inc: { losses: 1 } });
           room.lastWinner = winner;
-          saveUsers();
         } else {
-          Object.keys(room.players).forEach(player => {
-            users.get(player).draws++;
-          });
-          saveUsers();
+          await Promise.all(Object.keys(room.players).map(player => 
+            User.updateOne({ username: player }, { $inc: { draws: 1 } })
+          ));
         }
       } else {
         room.currentPlayer = Object.keys(room.players).find(p => p !== socket.username);
@@ -260,13 +252,13 @@ io.on('connection', (socket) => {
     gameRooms.delete(roomId);
   });
 
-  socket.on('updateAvatar', (avatar) => {
+  socket.on('updateAvatar', async (avatar) => {
     if (socket.username) {
-      const user = users.get(socket.username);
-      if (user) {
-        user.avatar = avatar;
-        saveUsers();
+      try {
+        await User.updateOne({ username: socket.username }, { avatar });
         socket.emit('avatarUpdated', avatar);
+      } catch (error) {
+        socket.emit('error', 'Failed to update avatar');
       }
     }
   });
