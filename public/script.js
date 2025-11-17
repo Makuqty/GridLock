@@ -120,6 +120,12 @@ socket.on('rpsStart', (data) => {
     currentRoom = data.roomId;
     showScreen('rpsScreen');
     document.getElementById('rpsStatus').textContent = 'Choose your move!';
+
+    // Reset RPS buttons
+    document.querySelectorAll('.rps-btn').forEach(btn => {
+        btn.disabled = false;
+        btn.style.background = '';
+    });
 });
 
 socket.on('rpsResult', (data) => {

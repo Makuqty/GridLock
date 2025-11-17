@@ -321,12 +321,13 @@ body {
 }
 
 .sidebar {
-    width: 280px;
+    width: 300px;
     background: var(--surface-dark);
     border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
     box-shadow: var(--shadow-lg);
+    position: relative;
 }
 
 .sidebar-header {
@@ -452,6 +453,12 @@ body {
 }
 
 .content-section.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.content-section.active {
     display: block;
 }
 
@@ -472,9 +479,12 @@ body {
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: var(--space-8);
     margin-bottom: var(--space-8);
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .dashboard-card {
@@ -690,8 +700,12 @@ body {
 /* Rock Paper Scissors Screen */
 .rps-container {
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-8);
 }
 
 .rps-header {
@@ -910,9 +924,11 @@ body {
 
 .game-board-container {
     display: grid;
-    grid-template-columns: 1fr 320px;
+    grid-template-columns: minmax(400px, 1fr) 350px;
     gap: var(--space-8);
     align-items: start;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .game-board {
@@ -1276,20 +1292,21 @@ body {
 .modal-content {
     background: rgba(30, 41, 59, 0.95);
     border-radius: var(--radius-2xl);
-    padding: var(--space-8);
+    padding: var(--space-10);
     text-align: center;
     box-shadow:
         var(--shadow-2xl),
         0 0 60px rgba(99, 102, 241, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(71, 85, 105, 0.3);
-    max-width: 90vw;
+    max-width: 500px;
     max-height: 90vh;
     overflow-y: auto;
     backdrop-filter: blur(20px);
     animation: modalSlideIn 0.4s ease-out;
     position: relative;
     overflow: hidden;
+    margin: var(--space-4);
 }
 
 @keyframes modalSlideIn {
@@ -1681,7 +1698,7 @@ body {
 }
 
 /* Responsive Design */
-@media (max-width: 1024px) {
+@media (max-width: 1100px) {
     .dashboard-layout {
         flex-direction: column;
     }
@@ -1697,6 +1714,12 @@ body {
         display: flex;
         overflow-x: auto;
         padding: var(--space-2) var(--space-4);
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .sidebar-nav::-webkit-scrollbar {
+        display: none;
     }
 
     .nav-item {
@@ -1718,11 +1741,16 @@ body {
     .dashboard-grid {
         grid-template-columns: 1fr;
         gap: var(--space-6);
+        max-width: none;
+        margin-left: 0;
+        margin-right: 0;
     }
 
     .game-board-container {
         grid-template-columns: 1fr;
         gap: var(--space-6);
+        max-width: none;
+        margin: 0;
     }
 }
 
