@@ -272,10 +272,27 @@ async function loadLeaderboard() {
         container.innerHTML = '';
         
         leaderboard.forEach((player, index) => {
+            const rank = index + 1;
+            let rankIcon = '';
+
+            if (rank === 1) {
+                rankIcon = '👑';
+            } else if (rank === 2) {
+                rankIcon = '🥈';
+            } else if (rank === 3) {
+                rankIcon = '🥉';
+            } else {
+                rankIcon = '🏅';
+            }
+
             const playerDiv = document.createElement('div');
-            playerDiv.className = 'leaderboard-item';
+            playerDiv.className = `leaderboard-item rank-${rank}`;
             playerDiv.innerHTML = `
-                <span>${index + 1}. ${player.username}</span>
+                <span class="player-name">
+                    <span class="rank-icon">${rankIcon}</span>
+                    <span class="rank-number">${rank}.</span>
+                    <span class="username">${player.username}</span>
+                </span>
                 <div class="leaderboard-stats">
                     <span>W:${player.wins}</span>
                     <span>L:${player.losses}</span>
