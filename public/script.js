@@ -129,20 +129,34 @@ socket.on('rpsStart', (data) => {
 });
 
 socket.on('rpsResult', (data) => {
-    const { choices, winner } = data;
+    const { choices, winner, isDraw } = data;
     const players = Object.keys(choices);
-    const isWinner = winner === currentUser.username;
-    
-    document.getElementById('rpsStatus').innerHTML = `
-        <div>Results:</div>
-        <div>${players[0]}: ${choices[players[0]]}</div>
-        <div>${players[1]}: ${choices[players[1]]}</div>
-        <div><strong>${winner} goes first!</strong></div>
-    `;
-    
-    setTimeout(() => {
-        document.getElementById('rpsStatus').textContent = 'Starting game...';
-    }, 2000);
+
+    if (isDraw) {
+        document.getElementById('rpsStatus').innerHTML = `
+            <div>Results:</div>
+            <div>${players[0]}: ${choices[players[0]]}</div>
+            <div>${players[1]}: ${choices[players[1]]}</div>
+            <div><strong>It's a draw! Try again!</strong></div>
+        `;
+
+        setTimeout(() => {
+            document.getElementById('rpsStatus').textContent = 'Restarting Rock Paper Scissors...';
+        }, 2000);
+    } else {
+        const isWinner = winner === currentUser.username;
+
+        document.getElementById('rpsStatus').innerHTML = `
+            <div>Results:</div>
+            <div>${players[0]}: ${choices[players[0]]}</div>
+            <div>${players[1]}: ${choices[players[1]]}</div>
+            <div><strong>${winner} goes first!</strong></div>
+        `;
+
+        setTimeout(() => {
+            document.getElementById('rpsStatus').textContent = 'Starting game...';
+        }, 2000);
+    }
 });
 
 socket.on('gameStart', (gameData) => {

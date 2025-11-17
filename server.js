@@ -242,9 +242,11 @@ io.on('connection', (socket) => {
         const choice2 = room.rpsChoices[player2];
         
         let winner = null;
+        let isDraw = false;
+
         if (choice1 === choice2) {
-          // Tie - random winner
-          winner = Math.random() < 0.5 ? player1 : player2;
+          // It's a draw - restart RPS
+          isDraw = true;
         } else if (
           (choice1 === 'rock' && choice2 === 'scissors') ||
           (choice1 === 'paper' && choice2 === 'rock') ||
@@ -254,28 +256,50 @@ io.on('connection', (socket) => {
         } else {
           winner = player2;
         }
-        
-        room.currentPlayer = winner;
-        room.gameState = 'playing';
-        
-        Object.values(room.players).forEach(player => {
-          io.to(player.socketId).emit('rpsResult', {
-            choices: room.rpsChoices,
-            winner: winner
-          });
-        });
-        
-        setTimeout(() => {
+
+        if (isDraw) {
+          // Emit draw result and restart RPS
           Object.values(room.players).forEach(player => {
-            io.to(player.socketId).emit('gameStart', {
-              roomId,
-              players: room.players,
-              currentPlayer: room.currentPlayer,
-              board: room.board
+            io.to(player.socketId).emit('rpsResult', {
+              choices: room.rpsChoices,
+              isDraw: true
             });
           });
-          startMoveTimer(roomId);
-        }, 3000);
+
+          // Reset RPS choices and restart after delay
+          setTimeout(() => {
+            room.rpsChoices = {};
+            Object.values(room.players).forEach(player => {
+              io.to(player.socketId).emit('rpsStart', {
+                roomId,
+                players: room.players
+              });
+            });
+          }, 3000);
+        } else {
+          // Normal win - proceed to game
+          room.currentPlayer = winner;
+          room.gameState = 'playing';
+
+          Object.values(room.players).forEach(player => {
+            io.to(player.socketId).emit('rpsResult', {
+              choices: room.rpsChoices,
+              winner: winner
+            });
+          });
+
+          setTimeout(() => {
+            Object.values(room.players).forEach(player => {
+              io.to(player.socketId).emit('gameStart', {
+                roomId,
+                players: room.players,
+                currentPlayer: room.currentPlayer,
+                board: room.board
+              });
+            });
+            startMoveTimer(roomId);
+          }, 3000);
+        }
       }
     }
   });
