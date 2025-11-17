@@ -134,7 +134,7 @@ app.get('/api/leaderboard', async (req, res) => {
   try {
     let leaderboard;
     if (useFirebase) {
-      const usersSnapshot = await db.collection('users').orderBy('wins', 'desc').limit(10).get();
+      const usersSnapshot = await db.collection('users').orderBy('wins', 'desc').limit(5).get();
       leaderboard = usersSnapshot.docs.map(doc => {
         const data = doc.data();
         return { username: data.username, wins: data.wins, losses: data.losses, draws: data.draws };
@@ -142,7 +142,7 @@ app.get('/api/leaderboard', async (req, res) => {
     } else {
       leaderboard = Array.from(users.values())
         .sort((a, b) => b.wins - a.wins)
-        .slice(0, 10)
+        .slice(0, 5)
         .map(({ username, wins, losses, draws }) => ({ username, wins, losses, draws }));
     }
     res.json(leaderboard);
