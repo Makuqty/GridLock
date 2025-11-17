@@ -107,42 +107,25 @@ app.post('/api/register', async (req, res) => {
 app.post('/api/login', async (req, res) => {
    try {
      const { username, password } = req.body;
-     console.log('Login attempt for username:', username);
 
      let user;
      if (useFirebase) {
-       console.log('Using Firebase for login');
        const userDoc = await db.collection('users').doc(username).get();
-       console.log('User doc exists:', userDoc.exists);
        if (!userDoc.exists) {
-         console.log('User not found in Firebase');
          return res.status(401).json({ error: 'Invalid credentials' });
        }
        user = userDoc.data();
-       console.log('User data from Firebase:', user);
      } else {
        user = users.get(username);
-       console.log('User from local storage:', user);
      }
 
-     if (!user) {
-       console.log('User not found');
-       return res.status(401).json({ error: 'Invalid credentials' });
-     }
-
-     const passwordMatch = await bcrypt.compare(password, user.password);
-     console.log('Password match:', passwordMatch);
-
-     if (!passwordMatch) {
-       console.log('Password does not match');
+     if (!user || !await bcrypt.compare(password, user.password)) {
        return res.status(401).json({ error: 'Invalid credentials' });
      }
 
      const token = jwt.sign({ username }, JWT_SECRET);
-     console.log('Login successful for:', username);
      res.json({ token, user: { username, wins: user.wins, losses: user.losses, draws: user.draws, avatar: user.avatar } });
    } catch (error) {
-     console.log('Login error:', error);
      res.status(500).json({ error: 'Login failed' });
    }
  });
