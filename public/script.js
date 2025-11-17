@@ -211,8 +211,19 @@ socket.on('symbolAccepted', () => {
 // Lobby functions
 function updateUserProfile() {
     const avatar = currentUser.avatar || '🎮';
-    document.getElementById('userProfile').innerHTML = 
-        `${avatar} ${currentUser.username}`;
+    const profileBtn = document.getElementById('userProfile');
+    if (profileBtn) {
+        profileBtn.innerHTML = `${avatar} ${currentUser.username}`;
+    }
+
+    // Update dashboard stats
+    const userWins = document.getElementById('userWins');
+    const userLosses = document.getElementById('userLosses');
+    const userDraws = document.getElementById('userDraws');
+
+    if (userWins) userWins.textContent = currentUser.wins || 0;
+    if (userLosses) userLosses.textContent = currentUser.losses || 0;
+    if (userDraws) userDraws.textContent = currentUser.draws || 0;
 }
 
 function updateOnlineUsers(users) {
@@ -749,6 +760,41 @@ function updateFindMatchButton() {
         btn.classList.remove('searching');
     }
 }
+
+// Navigation functions
+function switchSection(sectionName) {
+    // Hide all sections
+    document.querySelectorAll('.content-section').forEach(section => {
+        section.classList.remove('active');
+    });
+
+    // Remove active class from nav items
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+    });
+
+    // Show selected section
+    const targetSection = document.getElementById(sectionName + 'Section');
+    if (targetSection) {
+        targetSection.classList.add('active');
+    }
+
+    // Add active class to clicked nav item
+    const targetNav = document.querySelector(`[data-section="${sectionName}"]`);
+    if (targetNav) {
+        targetNav.classList.add('active');
+    }
+}
+
+// Add navigation event listeners
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+            const section = item.dataset.section;
+            switchSection(section);
+        });
+    });
+});
 
 // Auto-login if token exists
 window.addEventListener('load', () => {
