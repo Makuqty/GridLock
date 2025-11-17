@@ -306,7 +306,7 @@ io.on('connection', (socket) => {
 
   socket.on('makeMove', async ({ roomId, position }) => {
     const room = gameRooms.get(roomId);
-    if (room && room.currentPlayer === socket.username && room.board[position] === null) {
+    if (room && room.gameState === 'playing' && room.currentPlayer === socket.username && room.board[position] === null) {
       room.board[position] = room.players[socket.username].symbol;
       
       const winner = checkWinner(room.board, room);
