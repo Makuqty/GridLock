@@ -230,11 +230,9 @@ socket.on('symbolAccepted', () => {
 
 // Lobby functions
 function updateUserProfile() {
-    const avatar = currentUser.avatar || 'controller';
     const profileBtn = document.getElementById('userProfile');
     if (profileBtn) {
-        const iconClass = getAvatarIcon(avatar);
-        profileBtn.innerHTML = `<i class="bi ${iconClass}"></i> ${currentUser.username}`;
+        profileBtn.textContent = currentUser.username;
     }
 
     // Update dashboard stats
