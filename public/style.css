@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 :root {
     /* Modern Color Palette */
@@ -70,7 +70,8 @@
     --space-16: 4rem;
 
     /* Typography */
-    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-family-heading: 'Space Grotesk', 'Poppins', sans-serif;
     --font-size-xs: 0.75rem;
     --font-size-sm: 0.875rem;
     --font-size-base: 1rem;
@@ -79,10 +80,12 @@
     --font-size-2xl: 1.5rem;
     --font-size-3xl: 1.875rem;
     --font-size-4xl: 2.25rem;
+    --font-weight-light: 300;
     --font-weight-normal: 400;
     --font-weight-medium: 500;
     --font-weight-semibold: 600;
     --font-weight-bold: 700;
+    --font-weight-extrabold: 800;
 
     /* Transitions */
     --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -109,6 +112,8 @@
 
 body {
     font-family: var(--font-family);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: -0.01em;
     background:
         repeating-linear-gradient(
             0deg,
@@ -188,8 +193,9 @@ body {
 }
 
 .auth-container h1 {
+    font-family: var(--font-family-heading);
     font-size: var(--font-size-3xl);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-extrabold);
     text-align: center;
     margin-bottom: var(--space-8);
     background: linear-gradient(135deg, var(--primary-light), var(--secondary), var(--accent));
@@ -198,6 +204,7 @@ body {
     background-clip: text;
     position: relative;
     z-index: 1;
+    letter-spacing: -0.02em;
 }
 
 .auth-tabs {
@@ -400,13 +407,15 @@ body {
 }
 
 .lobby-header h1 {
+    font-family: var(--font-family-heading);
     font-size: var(--font-size-2xl);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-extrabold);
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin: 0;
+    letter-spacing: -0.02em;
 }
 
 .user-controls {
@@ -487,6 +496,7 @@ body {
 }
 
 .section-title {
+    font-family: var(--font-family-heading);
     font-size: var(--font-size-2xl);
     font-weight: var(--font-weight-bold);
     color: var(--text);
@@ -498,6 +508,7 @@ body {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    letter-spacing: -0.01em;
 }
 
 .section-icon {
@@ -516,6 +527,7 @@ body {
 }
 
 .sidebar-title {
+    font-family: var(--font-family-heading);
     display: flex;
     align-items: center;
     gap: var(--space-3);
@@ -523,9 +535,10 @@ body {
     background: rgba(15, 23, 42, 0.8);
     border-bottom: 1px solid rgba(71, 85, 105, 0.3);
     font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-bold);
     color: var(--text);
     margin: 0;
+    letter-spacing: -0.01em;
 }
 
 .sidebar-icon {
@@ -578,10 +591,12 @@ body {
 }
 
 .dashboard-card h3 {
+    font-family: var(--font-family-heading);
     font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-bold);
     margin-bottom: var(--space-2);
     color: var(--text);
+    letter-spacing: -0.01em;
 }
 
 .dashboard-card p {
