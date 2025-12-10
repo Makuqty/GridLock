@@ -318,6 +318,7 @@ io.on('connection', (socket) => {
       
       if (winner || isDraw) {
         room.gameState = winner ? 'finished' : 'draw';
+        clearInterval(room.moveTimer);
         if (winner) {
           const loser = Object.keys(room.players).find(p => p !== winner);
           room.lastWinner = winner;
