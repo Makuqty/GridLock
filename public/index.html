@@ -7,6 +7,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>TikTakToo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -46,62 +47,77 @@
                     </div>
                 </header>
 
-                <!-- Content Sections -->
-                <div class="lobby-content">
-                    <!-- Dashboard Section -->
-                    <section class="lobby-section dashboard-section">
-                        <h2 class="section-title">
-                            <span class="section-icon">🏠</span>
-                            Dashboard
-                        </h2>
-                        <div class="dashboard-grid">
-                            <div class="dashboard-card quick-match-card">
-                                <h3>Quick Match</h3>
-                                <p>Find a random opponent</p>
-                                <button id="findMatchBtn" class="find-match-btn" onclick="findMatch()">Find Match</button>
-                            </div>
-                            <div class="dashboard-card stats-card">
-                                <h3>Your Stats</h3>
-                                <div class="stats-overview">
-                                    <div class="stat-item">
-                                        <span class="stat-number" id="userWins">0</span>
-                                        <span class="stat-label">Wins</span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <span class="stat-number" id="userLosses">0</span>
-                                        <span class="stat-label">Losses</span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <span class="stat-number" id="userDraws">0</span>
-                                        <span class="stat-label">Draws</span>
+                <!-- Main Content Layout -->
+                <div class="lobby-layout">
+                    <!-- Main Content Area -->
+                    <main class="main-content">
+                        <section class="dashboard-section">
+                            <h2 class="section-title">
+                                <i class="bi bi-speedometer2 section-icon"></i>
+                                Dashboard
+                            </h2>
+                            <div class="dashboard-grid">
+                                <div class="dashboard-card quick-match-card">
+                                    <h3>Quick Match</h3>
+                                    <p>Find a random opponent</p>
+                                    <button id="findMatchBtn" class="find-match-btn" onclick="findMatch()">Find Match</button>
+                                </div>
+                                <div class="dashboard-card stats-card">
+                                    <h3>Your Stats</h3>
+                                    <div class="stats-overview">
+                                        <div class="stat-item">
+                                            <span class="stat-number" id="userWins">0</span>
+                                            <span class="stat-label">Wins</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-number" id="userLosses">0</span>
+                                            <span class="stat-label">Losses</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-number" id="userDraws">0</span>
+                                            <span class="stat-label">Draws</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </section>
+                        </section>
+                    </main>
 
-                    <!-- Players Section -->
-                    <section class="lobby-section players-section">
-                        <h2 class="section-title">
-                            <span class="section-icon">👥</span>
-                            Online Players
-                        </h2>
-                        <div class="players-container">
-                            <div id="onlinePlayersList" class="players-list"></div>
-                        </div>
-                    </section>
+                    <!-- Right Sidebar -->
+                    <aside class="sidebar">
+                        <!-- Online Players Section -->
+                        <section class="sidebar-section players-section">
+                            <h3 class="sidebar-title">
+                                <i class="bi bi-people-fill sidebar-icon"></i>
+                                Online Players
+                            </h3>
+                            <div class="sidebar-content">
+                                <div id="onlinePlayersList" class="players-list"></div>
+                            </div>
+                        </section>
 
-                    <!-- Leaderboard Section -->
-                    <section class="lobby-section leaderboard-section">
-                        <h2 class="section-title">
-                            <span class="section-icon">🏆</span>
-                            Leaderboard
-                        </h2>
-                        <div class="leaderboard-container">
-                            <div id="leaderboard" class="leaderboard"></div>
-                        </div>
-                    </section>
+                        <!-- Leaderboard Section -->
+                        <section class="sidebar-section leaderboard-section">
+                            <h3 class="sidebar-title">
+                                <i class="bi bi-trophy-fill sidebar-icon"></i>
+                                Leaderboard
+                            </h3>
+                            <div class="sidebar-content">
+                                <div id="leaderboard" class="leaderboard"></div>
+                            </div>
+                        </section>
+                    </aside>
                 </div>
+
+                <!-- Footer -->
+                <footer class="lobby-footer">
+                    <div class="footer-content">
+                        <p>&copy; 2024 TikTakToo. All rights reserved.</p>
+                        <div class="footer-links">
+                            <span>Made with ❤️ for gaming</span>
+                        </div>
+                    </div>
+                </footer>
             </div>
         </div>
 
@@ -114,15 +130,15 @@
                 </div>
                 <div class="rps-choices">
                     <button class="rps-btn" data-choice="rock" onclick="makeRPSChoice('rock')">
-                        <span class="rps-icon">🪨</span>
+                        <i class="bi bi-gem rps-icon"></i>
                         <span>Rock</span>
                     </button>
                     <button class="rps-btn" data-choice="paper" onclick="makeRPSChoice('paper')">
-                        <span class="rps-icon">📄</span>
+                        <i class="bi bi-file-earmark rps-icon"></i>
                         <span>Paper</span>
                     </button>
                     <button class="rps-btn" data-choice="scissors" onclick="makeRPSChoice('scissors')">
-                        <span class="rps-icon">✂️</span>
+                        <i class="bi bi-scissors rps-icon"></i>
                         <span>Scissors</span>
                     </button>
                 </div>
@@ -150,23 +166,23 @@
                         <div id="chatMessages" class="chat-messages"></div>
                         <div class="chat-input">
                             <input type="text" id="messageInput" placeholder="Type a message..." aria-label="Chat message" autocomplete="off">
-                            <button onclick="toggleEmotePicker()" class="emote-btn" aria-label="Add emote">😀</button>
+                            <button onclick="toggleEmotePicker()" class="emote-btn" aria-label="Add emote"><i class="bi bi-emoji-smile"></i></button>
                             <button onclick="sendMessage()" aria-label="Send message">Send</button>
                         </div>
                         <div id="emotePicker" class="emote-picker hidden">
                             <div class="emote-grid">
-                                <span onclick="addEmote('😀')">😀</span>
-                                <span onclick="addEmote('😂')">😂</span>
-                                <span onclick="addEmote('😎')">😎</span>
-                                <span onclick="addEmote('😍')">😍</span>
-                                <span onclick="addEmote('🤔')">🤔</span>
-                                <span onclick="addEmote('😭')">😭</span>
-                                <span onclick="addEmote('😡')">😡</span>
-                                <span onclick="addEmote('👍')">👍</span>
-                                <span onclick="addEmote('👎')">👎</span>
-                                <span onclick="addEmote('❤️')">❤️</span>
-                                <span onclick="addEmote('🔥')">🔥</span>
-                                <span onclick="addEmote('⭐')">⭐</span>
+                                <i class="bi bi-emoji-smile" onclick="addEmote('😀')"></i>
+                                <i class="bi bi-emoji-laughing" onclick="addEmote('😂')"></i>
+                                <i class="bi bi-emoji-sunglasses" onclick="addEmote('😎')"></i>
+                                <i class="bi bi-emoji-heart-eyes" onclick="addEmote('😍')"></i>
+                                <i class="bi bi-emoji-thinking" onclick="addEmote('🤔')"></i>
+                                <i class="bi bi-emoji-frown" onclick="addEmote('😭')"></i>
+                                <i class="bi bi-emoji-angry" onclick="addEmote('😡')"></i>
+                                <i class="bi bi-hand-thumbs-up" onclick="addEmote('👍')"></i>
+                                <i class="bi bi-hand-thumbs-down" onclick="addEmote('👎')"></i>
+                                <i class="bi bi-heart-fill" onclick="addEmote('❤️')"></i>
+                                <i class="bi bi-fire" onclick="addEmote('🔥')"></i>
+                                <i class="bi bi-star-fill" onclick="addEmote('⭐')"></i>
                             </div>
                         </div>
                     </div>
@@ -191,6 +207,8 @@
                     <button onclick="sendChallenge('lol')" aria-label="Choose lol symbol" class="image-symbol"><img src="images/lol.jpg" alt="Lol"></button>
                     <button onclick="sendChallenge('suck')" aria-label="Choose suck symbol" class="image-symbol"><img src="images/suck.jpg" alt="Suck"></button>
                     <button onclick="sendChallenge('troll')" aria-label="Choose troll symbol" class="image-symbol"><img src="images/troll.jpg" alt="Troll"></button>
+                    <button onclick="sendChallenge('isu')" aria-label="Choose ISU symbol" class="image-symbol"><img src="images/isu.jpg" alt="ISU"></button>
+                    <button onclick="sendChallenge('ccsict')" aria-label="Choose CCSICT symbol" class="image-symbol"><img src="images/ccsict.jpg" alt="CCSICT"></button>
                 </div>
             </div>
         </div>
@@ -200,14 +218,14 @@
             <div class="modal-content">
                 <h3>Choose Avatar</h3>
                 <div class="avatar-grid">
-                    <div class="avatar-option" onclick="selectAvatar('🎮')" data-avatar="🎮">🎮</div>
-                    <div class="avatar-option" onclick="selectAvatar('🎯')" data-avatar="🎯">🎯</div>
-                    <div class="avatar-option" onclick="selectAvatar('🎲')" data-avatar="🎲">🎲</div>
-                    <div class="avatar-option" onclick="selectAvatar('🏆')" data-avatar="🏆">🏆</div>
-                    <div class="avatar-option" onclick="selectAvatar('⭐')" data-avatar="⭐">⭐</div>
-                    <div class="avatar-option" onclick="selectAvatar('🔥')" data-avatar="🔥">🔥</div>
-                    <div class="avatar-option" onclick="selectAvatar('⚡')" data-avatar="⚡">⚡</div>
-                    <div class="avatar-option" onclick="selectAvatar('🎪')" data-avatar="🎪">🎪</div>
+                    <div class="avatar-option" onclick="selectAvatar('controller')" data-avatar="controller"><i class="bi bi-controller"></i></div>
+                    <div class="avatar-option" onclick="selectAvatar('bullseye')" data-avatar="bullseye"><i class="bi bi-bullseye"></i></div>
+                    <div class="avatar-option" onclick="selectAvatar('dice')" data-avatar="dice"><i class="bi bi-dice-6"></i></div>
+                    <div class="avatar-option" onclick="selectAvatar('trophy')" data-avatar="trophy"><i class="bi bi-trophy"></i></div>
+                    <div class="avatar-option" onclick="selectAvatar('star')" data-avatar="star"><i class="bi bi-star-fill"></i></div>
+                    <div class="avatar-option" onclick="selectAvatar('fire')" data-avatar="fire"><i class="bi bi-fire"></i></div>
+                    <div class="avatar-option" onclick="selectAvatar('lightning')" data-avatar="lightning"><i class="bi bi-lightning-fill"></i></div>
+                    <div class="avatar-option" onclick="selectAvatar('gem')" data-avatar="gem"><i class="bi bi-gem"></i></div>
                 </div>
             </div>
         </div>
@@ -240,6 +258,8 @@
                     <button onclick="acceptChallengeWithSymbol('lol')" aria-label="Choose lol symbol" class="image-symbol"><img src="images/lol.jpg" alt="Lol"></button>
                     <button onclick="acceptChallengeWithSymbol('suck')" aria-label="Choose suck symbol" class="image-symbol"><img src="images/suck.jpg" alt="Suck"></button>
                     <button onclick="acceptChallengeWithSymbol('troll')" aria-label="Choose troll symbol" class="image-symbol"><img src="images/troll.jpg" alt="Troll"></button>
+                    <button onclick="acceptChallengeWithSymbol('isu')" aria-label="Choose ISU symbol" class="image-symbol"><img src="images/isu.jpg" alt="ISU"></button>
+                    <button onclick="acceptChallengeWithSymbol('ccsict')" aria-label="Choose CCSICT symbol" class="image-symbol"><img src="images/ccsict.jpg" alt="CCSICT"></button>
                 </div>
                 <div id="challengeInitialActions" class="challenge-actions">
                     <button onclick="showSymbolChoice()" aria-label="Accept challenge">Accept</button>
@@ -265,6 +285,8 @@
                     <button onclick="chooseMatchSymbol('lol')" aria-label="Choose lol symbol" class="image-symbol"><img src="images/lol.jpg" alt="Lol"></button>
                     <button onclick="chooseMatchSymbol('suck')" aria-label="Choose suck symbol" class="image-symbol"><img src="images/suck.jpg" alt="Suck"></button>
                     <button onclick="chooseMatchSymbol('troll')" aria-label="Choose troll symbol" class="image-symbol"><img src="images/troll.jpg" alt="Troll"></button>
+                    <button onclick="chooseMatchSymbol('isu')" aria-label="Choose ISU symbol" class="image-symbol"><img src="images/isu.jpg" alt="ISU"></button>
+                    <button onclick="chooseMatchSymbol('ccsict')" aria-label="Choose CCSICT symbol" class="image-symbol"><img src="images/ccsict.jpg" alt="CCSICT"></button>
                 </div>
             </div>
         </div>

@@ -230,10 +230,11 @@ socket.on('symbolAccepted', () => {
 
 // Lobby functions
 function updateUserProfile() {
-    const avatar = currentUser.avatar || '🎮';
+    const avatar = currentUser.avatar || 'controller';
     const profileBtn = document.getElementById('userProfile');
     if (profileBtn) {
-        profileBtn.innerHTML = `${avatar} ${currentUser.username}`;
+        const iconClass = getAvatarIcon(avatar);
+        profileBtn.innerHTML = `<i class="bi ${iconClass}"></i> ${currentUser.username}`;
     }
 
     // Update dashboard stats
@@ -276,13 +277,13 @@ async function loadLeaderboard() {
             let rankIcon = '';
 
             if (rank === 1) {
-                rankIcon = '👑';
+                rankIcon = '<i class="bi bi-trophy-fill" style="color: #ffd700;"></i>';
             } else if (rank === 2) {
-                rankIcon = '🥈';
+                rankIcon = '<i class="bi bi-award-fill" style="color: #c0c0c0;"></i>';
             } else if (rank === 3) {
-                rankIcon = '🥉';
+                rankIcon = '<i class="bi bi-award-fill" style="color: #cd7f32;"></i>';
             } else {
-                rankIcon = '🏅';
+                rankIcon = '<i class="bi bi-award" style="color: #64748b;"></i>';
             }
 
             const playerDiv = document.createElement('div');
@@ -410,7 +411,7 @@ function updateGameBoard(gameData) {
             else if (symbol === '⚡') symbolClass = 'lightning';
             else if (symbol === '💎') symbolClass = 'diamond';
             
-            if (['fun', 'giga', 'kupal', 'lol', 'suck', 'troll'].includes(symbol)) {
+            if (['fun', 'giga', 'kupal', 'lol', 'suck', 'troll', 'isu', 'ccsict'].includes(symbol)) {
                 cells[index].innerHTML = `<img src="images/${symbol}.jpg" alt="${symbol}">`;
             } else {
                 cells[index].textContent = symbol;
@@ -705,40 +706,12 @@ document.addEventListener('mousedown', () => {
 
 // Profile functions
 function showProfile() {
-    const avatar = currentUser.avatar || '🎮';
+    const avatar = currentUser.avatar || 'controller';
     const totalGames = currentUser.wins + currentUser.losses + currentUser.draws;
     const winRate = totalGames > 0 ? Math.round((currentUser.wins / totalGames) * 100) : 0;
     
-    document.getElementById('profileAvatar').textContent = avatar;
-    document.getElementById('profileUsername').textContent = currentUser.username;
-    document.getElementById('profileWins').textContent = currentUser.wins;
-    document.getElementById('profileLosses').textContent = currentUser.losses;
-    document.getElementById('profileDraws').textContent = currentUser.draws;
-    document.getElementById('profileWinRate').textContent = `${winRate}%`;
-    
-    document.getElementById('profileModal').classList.add('active');
-}
-
-function closeProfile() {
-    document.getElementById('profileModal').classList.remove('active');
-}
-
-function changeAvatar() {
-    document.getElementById('avatarModal').classList.add('active');
-}
-
-function selectAvatar(avatar) {
-    socket.emit('updateAvatar', avatar);
-    document.getElementById('avatarModal').classList.remove('active');
-}
-
-// Profile functions
-function showProfile() {
-    const avatar = currentUser.avatar || '🎮';
-    const totalGames = currentUser.wins + currentUser.losses + currentUser.draws;
-    const winRate = totalGames > 0 ? Math.round((currentUser.wins / totalGames) * 100) : 0;
-    
-    document.getElementById('profileAvatar').textContent = avatar;
+    const iconClass = getAvatarIcon(avatar);
+    document.getElementById('profileAvatar').innerHTML = `<i class="bi ${iconClass}"></i>`;
     document.getElementById('profileUsername').textContent = currentUser.username;
     document.getElementById('profileWins').textContent = currentUser.wins;
     document.getElementById('profileLosses').textContent = currentUser.losses;
@@ -760,7 +733,8 @@ function selectAvatar(avatar) {
     currentUser.avatar = avatar;
     socket.emit('updateAvatar', avatar);
     document.getElementById('avatarModal').classList.remove('active');
-    document.getElementById('profileAvatar').textContent = avatar;
+    const iconClass = getAvatarIcon(avatar);
+    document.getElementById('profileAvatar').innerHTML = `<i class="bi ${iconClass}"></i>`;
     updateUserProfile();
 }
 
@@ -799,6 +773,20 @@ function updateFindMatchButton() {
 }
 
 // Navigation functions removed - all sections are now visible on single page
+
+function getAvatarIcon(avatar) {
+    const iconMap = {
+        'controller': 'bi-controller',
+        'bullseye': 'bi-bullseye',
+        'dice': 'bi-dice-6',
+        'trophy': 'bi-trophy',
+        'star': 'bi-star-fill',
+        'fire': 'bi-fire',
+        'lightning': 'bi-lightning-fill',
+        'gem': 'bi-gem'
+    };
+    return iconMap[avatar] || 'bi-controller';
+}
 
 // Auto-login if token exists
 window.addEventListener('load', () => {
