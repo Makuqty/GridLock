@@ -1,7 +1,7 @@
 {
-  "name": "TikTakToo",
+  "name": "TacTix",
   "version": "1.0.0",
-  "description": "TikTakToo Game",
+  "description": "TacTix Game",
   "main": "server.js",
   "engines": {
     "node": ">=18.0.0"

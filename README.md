@@ -1,6 +1,6 @@
-# TikTakToo
+# TacTix
 
-A real-time multiplayer TikTakToo game built with Node.js, Express, and Socket.IO.
+A real-time multiplayer TacTix game built with Node.js, Express, and Socket.IO.
 
 ## Features
 - User registration and authentication

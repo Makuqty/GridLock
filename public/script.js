@@ -447,6 +447,11 @@ function updateGameBoard(gameData) {
         
         document.getElementById('gameStatus').innerHTML = message;
         document.getElementById('rematchBtn').style.display = 'inline-block';
+        
+        // Show popup notification
+        if (message) {
+            showGameEndNotification(message);
+        }
     }
 }
 
@@ -462,15 +467,15 @@ function showGameEndNotification(message) {
     if (isWin) {
         bgColor = 'linear-gradient(135deg, #4ecdc4, #44a08d)';
         borderColor = '#4ecdc4';
-        icon = '🏆';
+        icon = '<i class="bi bi-trophy-fill"></i>';
     } else if (isDraw) {
         bgColor = 'linear-gradient(135deg, #f39c12, #e67e22)';
         borderColor = '#f39c12';
-        icon = '🤝';
+        icon = '<i class="bi bi-hand-thumbs-up-fill"></i>';
     } else {
         bgColor = 'linear-gradient(135deg, #e74c3c, #c0392b)';
         borderColor = '#e74c3c';
-        icon = '💔';
+        icon = '<i class="bi bi-heartbreak-fill"></i>';
     }
     
     notification.innerHTML = `
