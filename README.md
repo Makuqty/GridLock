@@ -1,6 +1,6 @@
-# TacTix
+# Silly Squares
 
-A real-time multiplayer TacTix game built with Node.js, Express, Socket.IO, and Firebase.
+A real-time multiplayer Silly Squares game built with Node.js, Express, Socket.IO, and Firebase.
 
 ## Features
 - User registration and authentication
