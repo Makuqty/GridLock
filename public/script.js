@@ -11,6 +11,7 @@ function showLogin() {
     document.querySelector('.tab-btn').classList.add('active');
     document.getElementById('loginForm').classList.remove('hidden');
     document.getElementById('registerForm').classList.add('hidden');
+    clearFormValidation();
 }
 
 function showRegister() {
@@ -18,12 +19,53 @@ function showRegister() {
     document.querySelectorAll('.tab-btn')[1].classList.add('active');
     document.getElementById('loginForm').classList.add('hidden');
     document.getElementById('registerForm').classList.remove('hidden');
+    clearFormValidation();
+}
+
+// Form validation functions
+function validateInput(input, rules) {
+    const value = input.value.trim();
+    let isValid = true;
+    let message = '';
+    
+    if (rules.required && !value) {
+        isValid = false;
+        message = 'This field is required';
+    } else if (rules.minLength && value.length < rules.minLength) {
+        isValid = false;
+        message = `Must be at least ${rules.minLength} characters`;
+    } else if (rules.pattern && !rules.pattern.test(value)) {
+        isValid = false;
+        message = rules.patternMessage || 'Invalid format';
+    }
+    
+    updateInputValidation(input, isValid, message);
+    return isValid;
+}
+
+function updateInputValidation(input, isValid, message) {
+    input.classList.remove('error', 'success');
+    
+    if (input.value.trim()) {
+        input.classList.add(isValid ? 'success' : 'error');
+    }
+}
+
+function clearFormValidation() {
+    document.querySelectorAll('.auth-form input').forEach(input => {
+        input.classList.remove('error', 'success');
+    });
 }
 
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const username = document.getElementById('loginUsername').value;
     const password = document.getElementById('loginPassword').value;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    
+    // Show loading state
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="bi bi-arrow-clockwise" style="animation: spin 1s linear infinite;"></i> Logging in...';
     
     try {
         const response = await fetch('/api/login', {
@@ -34,21 +76,50 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         
         const data = await response.json();
         if (response.ok) {
+            showNotification('Login successful! Welcome back!', 'success');
             localStorage.setItem('token', data.token);
             currentUser = data.user;
             socket.emit('authenticate', data.token);
         } else {
-            alert(data.error);
+            showNotification(data.error || 'Login failed', 'error');
         }
     } catch (error) {
-        alert('Login failed');
+        showNotification('Connection error. Please try again.', 'error');
+    } finally {
+        // Reset button state
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Login';
     }
+});
+
+// Add real-time validation to login form
+document.getElementById('loginUsername').addEventListener('input', function() {
+    validateInput(this, { required: true, minLength: 3 });
+});
+
+document.getElementById('loginPassword').addEventListener('input', function() {
+    validateInput(this, { required: true, minLength: 6 });
 });
 
 document.getElementById('registerForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const username = document.getElementById('registerUsername').value;
     const password = document.getElementById('registerPassword').value;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    
+    // Validate inputs
+    if (username.length < 3) {
+        showNotification('Username must be at least 3 characters long', 'error');
+        return;
+    }
+    if (password.length < 6) {
+        showNotification('Password must be at least 6 characters long', 'error');
+        return;
+    }
+    
+    // Show loading state
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="bi bi-arrow-clockwise" style="animation: spin 1s linear infinite;"></i> Creating account...';
     
     try {
         const response = await fetch('/api/register', {
@@ -59,14 +130,35 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         
         const data = await response.json();
         if (response.ok) {
-            alert('Registration successful! Please login.');
+            showNotification('Registration successful! Please login with your new account.', 'success');
             showLogin();
+            // Clear form
+            document.getElementById('registerUsername').value = '';
+            document.getElementById('registerPassword').value = '';
         } else {
-            alert(data.error);
+            showNotification(data.error || 'Registration failed', 'error');
         }
     } catch (error) {
-        alert('Registration failed');
+        showNotification('Connection error. Please try again.', 'error');
+    } finally {
+        // Reset button state
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Register';
     }
+});
+
+// Add real-time validation to register form
+document.getElementById('registerUsername').addEventListener('input', function() {
+    const isValid = validateInput(this, { 
+        required: true, 
+        minLength: 3,
+        pattern: /^[a-zA-Z0-9_]+$/,
+        patternMessage: 'Only letters, numbers, and underscores allowed'
+    });
+});
+
+document.getElementById('registerPassword').addEventListener('input', function() {
+    validateInput(this, { required: true, minLength: 6 });
 });
 
 function logout() {
@@ -89,6 +181,13 @@ socket.on('authenticated', (user) => {
     showScreen('lobbyScreen');
     updateUserProfile();
     loadLeaderboard();
+    
+    // Show welcome notification if not auto-login
+    const isAutoLogin = localStorage.getItem('token');
+    if (isAutoLogin && !sessionStorage.getItem('welcomeShown')) {
+        showNotification(`Welcome back, ${user.username}!`, 'success', 3000);
+        sessionStorage.setItem('welcomeShown', 'true');
+    }
 });
 
 socket.on('avatarUpdated', (avatar) => {
@@ -97,7 +196,7 @@ socket.on('avatarUpdated', (avatar) => {
 });
 
 socket.on('authError', (error) => {
-    alert(error);
+    showNotification(error || 'Authentication failed', 'error');
     logout();
 });
 
@@ -113,7 +212,7 @@ socket.on('challengeReceived', (challenge) => {
 });
 
 socket.on('challengeDeclined', (username) => {
-    alert(`${username} declined your challenge`);
+    showNotification(`${username} declined your challenge`, 'info');
 });
 
 socket.on('rpsStart', (data) => {
@@ -198,7 +297,7 @@ socket.on('rematchRequested', (requester) => {
 });
 
 socket.on('rematchDeclined', (decliner) => {
-    alert(`${decliner} declined the rematch`);
+    showNotification(`${decliner} declined the rematch`, 'info');
     document.getElementById('rematchBtn').textContent = 'Rematch';
     document.getElementById('rematchBtn').disabled = false;
 });
@@ -220,7 +319,7 @@ function chooseMatchSymbol(symbol) {
 }
 
 socket.on('symbolTaken', (symbol) => {
-    alert(`Symbol ${symbol} is already taken by your opponent. Please choose another.`);
+    showNotification(`Symbol ${symbol} is already taken. Please choose another.`, 'warning');
 });
 
 socket.on('symbolAccepted', () => {
@@ -790,6 +889,147 @@ function getAvatarIcon(avatar) {
         'gem': 'bi-gem'
     };
     return iconMap[avatar] || 'bi-controller';
+}
+
+// Enhanced notification system
+function showNotification(message, type = 'info', duration = 4000) {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    
+    let icon, bgColor, borderColor;
+    switch (type) {
+        case 'success':
+            icon = '<i class="bi bi-check-circle-fill"></i>';
+            bgColor = 'linear-gradient(135deg, #10b981, #059669)';
+            borderColor = '#10b981';
+            break;
+        case 'error':
+            icon = '<i class="bi bi-x-circle-fill"></i>';
+            bgColor = 'linear-gradient(135deg, #ef4444, #dc2626)';
+            borderColor = '#ef4444';
+            break;
+        case 'warning':
+            icon = '<i class="bi bi-exclamation-triangle-fill"></i>';
+            bgColor = 'linear-gradient(135deg, #f59e0b, #d97706)';
+            borderColor = '#f59e0b';
+            break;
+        default:
+            icon = '<i class="bi bi-info-circle-fill"></i>';
+            bgColor = 'linear-gradient(135deg, #6366f1, #4f46e5)';
+            borderColor = '#6366f1';
+    }
+    
+    notification.innerHTML = `
+        <div class="notification-icon">${icon}</div>
+        <div class="notification-message">${message}</div>
+        <button class="notification-close" onclick="this.parentElement.remove()">
+            <i class="bi bi-x"></i>
+        </button>
+    `;
+    
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${bgColor};
+        color: white;
+        padding: 16px 20px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        backdrop-filter: blur(15px);
+        border: 2px solid ${borderColor};
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 20px ${borderColor}40;
+        animation: notificationSlideIn 0.4s ease-out;
+        max-width: 400px;
+        min-width: 300px;
+        word-wrap: break-word;
+    `;
+    
+    // Add notification styles if not already added
+    if (!document.getElementById('notificationStyles')) {
+        const style = document.createElement('style');
+        style.id = 'notificationStyles';
+        style.textContent = `
+            @keyframes notificationSlideIn {
+                0% { 
+                    opacity: 0; 
+                    transform: translateX(100%) scale(0.8);
+                }
+                100% { 
+                    opacity: 1; 
+                    transform: translateX(0) scale(1);
+                }
+            }
+            @keyframes notificationSlideOut {
+                0% { 
+                    opacity: 1; 
+                    transform: translateX(0) scale(1);
+                }
+                100% { 
+                    opacity: 0; 
+                    transform: translateX(100%) scale(0.8);
+                }
+            }
+            @keyframes spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+            .notification-icon {
+                font-size: 20px;
+                flex-shrink: 0;
+            }
+            .notification-message {
+                flex: 1;
+                line-height: 1.4;
+            }
+            .notification-close {
+                background: rgba(255, 255, 255, 0.2);
+                border: none;
+                color: white;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                transition: background 0.2s;
+                flex-shrink: 0;
+            }
+            .notification-close:hover {
+                background: rgba(255, 255, 255, 0.3);
+            }
+            @media (max-width: 480px) {
+                .notification {
+                    right: 10px !important;
+                    left: 10px !important;
+                    max-width: none !important;
+                    min-width: auto !important;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after duration
+    setTimeout(() => {
+        if (document.body.contains(notification)) {
+            notification.style.animation = 'notificationSlideOut 0.3s ease-in forwards';
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 300);
+        }
+    }, duration);
 }
 
 // Auto-login if token exists
