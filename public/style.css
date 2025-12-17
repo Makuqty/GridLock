@@ -1230,20 +1230,20 @@ body {
 }
 
 .chat-container {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.4) 100%);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.6) 100%);
     border-radius: var(--radius-xl);
-    padding: var(--space-6);
+    padding: 0;
     display: flex;
     flex-direction: column;
-    height: 400px;
+    height: 420px;
     box-shadow:
-        0 8px 32px rgba(0, 0, 0, 0.3),
-        0 0 40px rgba(99, 102, 241, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(129, 140, 248, 0.3);
+        0 12px 40px rgba(0, 0, 0, 0.4),
+        0 0 60px rgba(99, 102, 241, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(129, 140, 248, 0.4);
     position: relative;
-    backdrop-filter: blur(30px) saturate(180%);
-    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
     overflow: hidden;
     transition: all var(--transition-normal);
 }
@@ -1306,25 +1306,26 @@ body {
 }
 
 .chat-container:hover {
-    border-color: rgba(129, 140, 248, 0.5);
+    border-color: rgba(129, 140, 248, 0.6);
     box-shadow:
-        0 12px 40px rgba(0, 0, 0, 0.4),
-        0 0 60px rgba(99, 102, 241, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        0 16px 48px rgba(0, 0, 0, 0.5),
+        0 0 80px rgba(99, 102, 241, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
 }
 
 .chat-messages {
     flex: 1;
     overflow-y: auto;
-    margin-bottom: var(--space-4);
-    padding: var(--space-4);
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.7) 100%);
+    padding: var(--space-5);
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.8) 100%);
     border: 1px solid rgba(71, 85, 105, 0.3);
     border-top: none;
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
-    backdrop-filter: blur(15px);
+    gap: var(--space-3);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     position: relative;
     z-index: 1;
     scroll-behavior: smooth;
@@ -1456,24 +1457,26 @@ body {
 
 .chat-input {
     display: flex;
-    gap: var(--space-2);
+    gap: var(--space-3);
     align-items: center;
-    background: linear-gradient(135deg, rgba(51, 65, 85, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%);
-    border-radius: 25px;
-    padding: var(--space-2);
-    backdrop-filter: blur(15px);
-    border: 1px solid rgba(71, 85, 105, 0.4);
+    background: linear-gradient(135deg, rgba(51, 65, 85, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%);
+    border-radius: 28px;
+    padding: var(--space-3);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 2px solid rgba(71, 85, 105, 0.5);
     position: relative;
-    z-index: 1;
+    z-index: 10;
     transition: all var(--transition-normal);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-md);
+    margin: var(--space-4);
 }
 
 .chat-input:focus-within {
     border-color: var(--primary);
-    background: linear-gradient(135deg, rgba(51, 65, 85, 1) 0%, rgba(30, 41, 59, 0.9) 100%);
-    box-shadow: var(--shadow-md), 0 0 0 3px rgba(99, 102, 241, 0.1);
-    transform: translateY(-1px);
+    background: linear-gradient(135deg, rgba(51, 65, 85, 1) 0%, rgba(30, 41, 59, 0.95) 100%);
+    box-shadow: var(--shadow-lg), 0 0 0 4px rgba(99, 102, 241, 0.15), var(--glow-primary);
+    transform: translateY(-2px);
 }
 
 .chat-input input {
@@ -1510,8 +1513,8 @@ body {
 }
 
 .chat-input button, .emote-btn {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     border: none;
     border-radius: 50%;
     font-weight: var(--font-weight-medium);
@@ -1520,9 +1523,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
+    font-size: 1.1rem;
     position: relative;
     overflow: hidden;
+    min-width: 44px;
+    min-height: 44px;
+    flex-shrink: 0;
 }
 
 .chat-input button::before, .emote-btn::before {
@@ -1548,8 +1554,13 @@ body {
 
 .chat-input button:hover {
     background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-    transform: scale(1.05);
-    box-shadow: var(--shadow-md), var(--glow-primary);
+    transform: scale(1.08) translateY(-1px);
+    box-shadow: var(--shadow-lg), var(--glow-primary);
+}
+
+.chat-input button:active {
+    transform: scale(0.95);
+    transition: transform 0.1s;
 }
 
 .emote-btn {
@@ -1561,9 +1572,16 @@ body {
 }
 
 .emote-btn:hover {
-    background: rgba(51, 65, 85, 0.9);
-    transform: scale(1.05);
-    box-shadow: var(--shadow-md);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(129, 140, 248, 0.2));
+    border-color: var(--primary);
+    transform: scale(1.08) translateY(-1px);
+    box-shadow: var(--shadow-lg), var(--glow-primary);
+    color: var(--primary-light);
+}
+
+.emote-btn:active {
+    transform: scale(0.95);
+    transition: transform 0.1s;
 }
 
 /* Modals */
@@ -1655,6 +1673,10 @@ body {
     grid-template-columns: repeat(6, 1fr);
     gap: 0.75rem;
     margin-top: 1rem;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    -webkit-overflow-scrolling: touch;
 }
 
 .image-symbol img {
@@ -2090,17 +2112,19 @@ body {
     position: absolute;
     bottom: 70px;
     right: 0;
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.9) 100%);
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.95) 100%);
     border-radius: var(--radius-xl);
-    padding: var(--space-4);
-    border: 1px solid rgba(129, 140, 248, 0.4);
+    padding: var(--space-5);
+    border: 2px solid rgba(129, 140, 248, 0.6);
     box-shadow:
-        var(--shadow-xl),
-        0 0 40px rgba(99, 102, 241, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(25px) saturate(180%);
+        var(--shadow-2xl),
+        0 0 60px rgba(99, 102, 241, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
     animation: emoteSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    min-width: 200px;
+    min-width: 220px;
+    z-index: var(--z-popover);
 }
 
 @keyframes emoteSlideIn {
@@ -2140,21 +2164,24 @@ body {
 }
 
 .emote-grid i {
-    font-size: 1.5rem;
-    padding: var(--space-3);
+    font-size: 1.6rem;
+    padding: var(--space-4);
     cursor: pointer;
     border-radius: var(--radius-lg);
     text-align: center;
     transition: all var(--transition-normal);
-    background: rgba(51, 65, 85, 0.7);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(71, 85, 105, 0.3);
+    background: rgba(51, 65, 85, 0.8);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(71, 85, 105, 0.4);
     display: flex;
     align-items: center;
     justify-content: center;
     aspect-ratio: 1;
     position: relative;
     overflow: hidden;
+    min-height: 48px;
+    min-width: 48px;
 }
 
 .emote-grid i::before {
@@ -2330,6 +2357,7 @@ body {
     .symbol-choice {
         grid-template-columns: repeat(3, 1fr);
         gap: var(--space-3);
+        max-height: 50vh;
     }
 
     .symbol-choice button {
@@ -2392,7 +2420,7 @@ body {
 /* Chat Enhancements for Mobile */
 @media (max-width: 768px) {
     .chat-container {
-        height: 350px;
+        height: 380px;
     }
     
     .message {
@@ -2404,21 +2432,39 @@ body {
         padding: var(--space-2) var(--space-3);
     }
     
+    .chat-input button, .emote-btn {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        min-height: 48px;
+        font-size: 1.2rem;
+    }
+    
+    .chat-input {
+        padding: var(--space-4);
+        gap: var(--space-4);
+        margin: var(--space-3);
+    }
+    
     .emote-picker {
-        right: -10px;
+        right: 10px;
         left: 10px;
-        bottom: 60px;
+        bottom: 80px;
         min-width: auto;
+        z-index: var(--z-tooltip);
+        padding: var(--space-4);
     }
     
     .emote-grid {
         grid-template-columns: repeat(6, 1fr);
-        gap: var(--space-1);
+        gap: var(--space-2);
     }
     
     .emote-grid i {
-        font-size: 1.25rem;
-        padding: var(--space-2);
+        font-size: 1.4rem;
+        padding: var(--space-3);
+        min-height: 44px;
+        min-width: 44px;
     }
     
     .typing-dots span {
@@ -2573,9 +2619,12 @@ body {
         min-height: 44px;
     }
 
-    .chat-input button {
-        min-height: 44px;
-        min-width: 44px;
+    .chat-input button, .emote-btn {
+        min-height: 48px;
+        min-width: 48px;
+        width: 48px;
+        height: 48px;
+        font-size: 1.1rem;
     }
 
     .rps-container {
@@ -2607,6 +2656,7 @@ body {
     .symbol-choice {
         grid-template-columns: repeat(3, 1fr);
         gap: var(--space-2);
+        max-height: 45vh;
     }
 
     .symbol-choice button {
@@ -2691,6 +2741,7 @@ body {
 
     .symbol-choice {
         grid-template-columns: repeat(2, 1fr);
+        max-height: 40vh;
     }
 
     .symbol-choice button {
