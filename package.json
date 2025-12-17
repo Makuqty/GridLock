@@ -1,7 +1,7 @@
 {
-  "name": "TacTix",
+  "name": "GridLock",
   "version": "1.0.0",
-  "description": "TacTix Game",
+  "description": "GridLock Game",
   "main": "server.js",
   "engines": {
     "node": ">=18.0.0"

@@ -1,6 +1,6 @@
-# Silly Squares
+# GridLock
 
-A real-time multiplayer Silly Squares game built with Node.js, Express, Socket.IO, and Firebase.
+A real-time multiplayer GridLock game built with Node.js, Express, Socket.IO, and Firebase.
 
 ## Features
 - User registration and authentication
